@@ -1,0 +1,104 @@
+-- Crear la tabla Usuario
+CREATE TABLE Usuario (
+    tokenid SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    contrasena VARCHAR(255) NOT NULL,
+    nombre VARCHAR(255) NOT NULL,
+    ruc VARCHAR(15),
+    dni VARCHAR(15),
+    genero VARCHAR(10)
+);
+
+CREATE TABLE Empleado (
+    idEmpleado SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    contrasena VARCHAR(255) NOT NULL,
+    nombre VARCHAR(255) NOT NULL,
+    dni VARCHAR(15),
+    genero VARCHAR(10),
+	paqEmtregado INTEGER NOT NULL
+);
+
+CREATE TABLE Empresa (
+    idEmpresa SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    contrasena VARCHAR(255) NOT NULL,
+    nombre VARCHAR(255) NOT NULL,
+	  paqEmtregado INTEGER NOT NULL
+);
+
+-- Crear la tabla Ubicacion
+CREATE TABLE Ubicacion (
+    idUbicacion SERIAL PRIMARY KEY,
+    latitud DOUBLE PRECISION,
+    longitud DOUBLE PRECISION
+);
+
+-- Crear la tabla Empleado (Añade las columnas según tus necesidades)
+
+-- Crear la tabla Empresa (Añade las columnas según tus necesidades)
+
+-- Crear la tabla Producto
+CREATE TABLE Producto (
+    idProducto SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    peso DOUBLE PRECISION,
+    volumen DOUBLE PRECISION,
+    resistencia VARCHAR(255),
+    fecha_creacion DATE,
+    categoria VARCHAR(255)
+);
+
+-- Crear la tabla Destino
+CREATE TABLE Destino (
+    idDestino SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+	  npostal INTEGER NOT NULL,
+    FKUbicacion INTEGER REFERENCES Ubicacion(idUbicacion)
+);
+
+-- Crear la tabla Seguimiento
+CREATE TABLE Seguimiento (
+    idSeguimiento SERIAL PRIMARY KEY,
+    FKProducto INTEGER REFERENCES Producto(idProducto),
+    Orden INTEGER,
+    FKDestino_Head INTEGER REFERENCES Destino(idDestino),
+    FKDestino_Foot INTEGER REFERENCES Destino(idDestino),
+    Hora TIME,
+    Fecha DATE,
+    FKEntregador INTEGER REFERENCES Empleado(idEmpleado),
+    FKUsuario INTEGER REFERENCES Usuario(tokenid),
+    Estado VARCHAR(255)
+);
+
+-- Crear la tabla DetalleVenta
+CREATE TABLE DetalleVenta (
+    idDetalleVenta SERIAL PRIMARY KEY,
+    FKProducto INTEGER REFERENCES Producto(idProducto),
+    Precio DOUBLE PRECISION,
+    Cantidad INTEGER
+);
+
+-- Crear la tabla MontoFinal
+CREATE TABLE MontoFinal (
+    idMontoFinal SERIAL PRIMARY KEY,
+    FkDetalleVenta INTEGER REFERENCES DetalleVenta(idDetalleVenta),
+    IGV DOUBLE PRECISION,
+    PrecioFinal DOUBLE PRECISION
+);
+
+-- Crear la tabla Factura
+CREATE TABLE Factura (
+    idFactura SERIAL PRIMARY KEY,
+	  TipoDocumento VARCHAR(255),
+    FkUsuario INTEGER REFERENCES Usuario(tokenid),
+    Fecha DATE,
+    FKMontoFinal INTEGER REFERENCES MontoFinal(idMontoFinal),
+    FKEmpresa INTEGER REFERENCES Empresa(idEmpresa),
+    Estado VARCHAR(255)
+);
+
+CREATE TABLE NroFactura (
+	idDocumentoF SERIAL PRIMARY KEY,
+	FkFactura INTEGER REFERENCES Factura(idFactura)	
+);
